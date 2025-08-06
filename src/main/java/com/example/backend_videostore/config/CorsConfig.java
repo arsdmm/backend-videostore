@@ -8,9 +8,25 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+/* 
+   This class defines a CORS configuration for the backend using Spring Boot.
+   CORS (Cross-Origin Resource Sharing) allows the frontend (hosted on another domain)
+   to communicate with the backend by setting proper HTTP headers.
+*/
 @Configuration
 public class CorsConfig {
 
+    /* 
+       This method defines a bean that configures CORS settings for the application.
+
+       It allows:
+       - Requests from the frontend deployed at "https://front-videostore.vercel.app"
+       - HTTP methods: GET, POST, PUT, DELETE, OPTIONS
+       - All headers
+       - Credential sharing (cookies, tokens)
+
+       The configuration is registered for all endpoints using "/**".
+    */
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();

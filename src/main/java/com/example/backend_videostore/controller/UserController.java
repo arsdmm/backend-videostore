@@ -18,25 +18,53 @@ import com.example.backend_videostore.service.UserService;
 
 import jakarta.validation.Valid;
 
+/*
+  UserController handles authentication-related operations:
+  - User registration
+  - User login
+
+  It provides two endpoints under /api/users:
+  - POST /register: to create a new user
+  - POST /login: to verify credentials and return a JWT token
+
+  CrossOrigin is enabled to allow requests from the frontend.
+*/
 @CrossOrigin
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
 
+    /* Injects the UserService which handles user-related logic */
     @Autowired
     private UserService userService;
 
+    /* Injects JwtUtil for generating JWT tokens during login */
     @Autowired
     private JwtUtil jwtUtil;
 
-    // Registration endpoint
+    /* 
+       POST /api/users/register
+       Registers a new user.
+       - Expects a User object in the request body
+       - Validates the input using @Valid (e.g., required fields)
+       - Calls the service to save the user in the database
+       - Returns 201 Created with the saved user object
+    */
     @PostMapping("/register")
     public ResponseEntity<?> register(@Valid @RequestBody User user) {
         User created = userService.register(user);
         return new ResponseEntity<>(created, HttpStatus.CREATED);
     }
 
-    // Login endpoint with JWT generation
+    /* 
+       POST /api/users/login
+       Authenticates the user and returns a JWT token.
+       - Expects a JSON with "email" and "password"
+       - Finds the user by email
+       - Compares the raw password with the stored (hashed) password using BCrypt
+       - If valid, generates and returns a JWT token
+       - If invalid, returns 401 Unauthorized
+    */
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody Map<String, String> loginData) {
         String email = loginData.get("email");
@@ -47,8 +75,8 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
         }
 
-        String token = jwtUtil.generateToken(email); // ← создаём токен
-        return ResponseEntity.ok(Map.of("token", token)); // ← возвращаем токен
+        String token = jwtUtil.generateToken(email); // create token
+        return ResponseEntity.ok(Map.of("token", token)); // give token back
     }
 
 }
